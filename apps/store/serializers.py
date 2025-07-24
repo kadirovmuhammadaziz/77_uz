@@ -290,7 +290,7 @@ class AdPhotoCreateSerializer(serializers.ModelSerializer):
 class SearchResultSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField()
-    type = serializers.CharField()  # 'category' yoki 'product'
+    type = serializers.CharField()
     icon = serializers.URLField(required=False)
 
 

@@ -1,7 +1,7 @@
 import os
 import sys
+from datetime import timedelta
 from pathlib import Path
-
 from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
 
@@ -13,7 +13,6 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY")
-REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD", "")
 
 # Application definition
 BASE_APPS = [
@@ -24,22 +23,21 @@ BASE_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.gis",
     "django.contrib.postgres",
-
 ]
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "rest_framework_simplejwt",
     "corsheaders",
     "drf_yasg",
     "django_cleanup.apps.CleanupSelectedConfig",
+    "django_filters",
 ]
 
 LOCAL_APPS = [
-    'common',
-    'accounts',
-    'store'
-
+    "common",
+    "accounts",
+    "store",
 ]
 INSTALLED_APPS = BASE_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -72,8 +70,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -117,13 +113,10 @@ USE_TZ = True
 LANGUAGES = (
     ("uz", _("Uzbek")),
     ("ru", _("Russian")),
-    ("en", _("English")),
 )
 
 MODELTRANSLATION_DEFAULT_LANGUAGE = "uz"
-MODELTRANSLATION_LANGUAGES = ("uz", "ru" ,"en")
-MODELTRANSLATION_FALLBACK_LANGUAGES = ('uz', 'en')
-
+MODELTRANSLATION_LANGUAGES = ("uz", "ru")
 
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, "locale"),
@@ -142,9 +135,32 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 
+AUTH_USER_MODEL = "accounts.User"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
 
 # Django Rest Framework configurations
 REST_FRAMEWORK = {
-    "EXCEPTION_HANDLER": "common.utils.custom_exception_handler.custom_exception_handler",  # noqa
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ),
+    # "EXCEPTION_HANDLER": "common.utils.custom_exception_handler.custom_exception_handler",  # noqa
+    'DEFAULT_FILTER_BACKENDS': (
+            'django_filters.rest_framework.DjangoFilterBackend',
+            'rest_framework.filters.OrderingFilter',
+            'rest_framework.filters.SearchFilter',
+        ),
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+    "UPDATE_LAST_LOGIN": False,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "USER_ID_FIELD": "guid",
+    "USER_ID_CLAIM": "user_guid",
 }
