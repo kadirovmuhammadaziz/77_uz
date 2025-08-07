@@ -12,10 +12,9 @@ def create_search_count(sender, instance, created, **kwargs):
 @receiver(post_save, sender=AdPhoto)
 def manage_main_photo(sender, instance, created, **kwargs):
     if instance.is_main:
-        AdPhoto.objects.filter(
-            ad=instance.ad,
-            is_main=True
-        ).exclude(id=instance.id).update(is_main=False)
+        AdPhoto.objects.filter(ad=instance.ad, is_main=True).exclude(
+            id=instance.id
+        ).update(is_main=False)
     else:
         if not AdPhoto.objects.filter(ad=instance.ad, is_main=True).exists():
             first_photo = AdPhoto.objects.filter(ad=instance.ad).first()

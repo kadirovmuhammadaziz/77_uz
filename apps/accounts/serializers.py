@@ -9,13 +9,13 @@ from .models import User, Address, Category
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = ['name', 'lat', 'long']
+        fields = ["name", "lat", "long"]
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['id', 'name', 'description']
+        fields = ["id", "name", "description"]
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -24,66 +24,71 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id', 'full_name', 'phone_number',
-            'profile_photo', 'address', 'created_at'
+            "id",
+            "full_name",
+            "phone_number",
+            "profile_photo",
+            "address",
+            "created_at",
         ]
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
-    password_confirm = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    password = serializers.CharField(write_only=True, style={"input_type": "password"})
+    password_confirm = serializers.CharField(
+        write_only=True, style={"input_type": "password"}
+    )
 
     class Meta:
         model = User
-        fields = ['full_name', 'phone_number', 'password', 'password_confirm']
+        fields = ["full_name", "phone_number", "password", "password_confirm"]
 
     def validate(self, attrs):
-        if attrs['password'] != attrs['password_confirm']:
+        if attrs["password"] != attrs["password_confirm"]:
             raise serializers.ValidationError("Passwords do not match.")
 
         try:
-            validate_password(attrs['password'])
+            validate_password(attrs["password"])
         except ValidationError as e:
-            raise serializers.ValidationError({'password': e.messages})
+            raise serializers.ValidationError({"password": e.messages})
 
         return attrs
 
     def create(self, validated_data):
-        validated_data.pop('password_confirm')
-        password = validated_data.pop('password')
+        validated_data.pop("password_confirm")
+        password = validated_data.pop("password")
 
         user = User.objects.create_user(
-            password=password,
-            role='customer',
-            status='approved',
-            **validated_data
+            password=password, role="customer", status="approved", **validated_data
         )
+
         return user
 
-    class SellerRegistrationSerializer(serializers.ModelSerializer):
-        address = AddressSerializer()
-        category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
 
-        class Meta:
-            model = User
-            fields = [
-                'id', 'full_name', 'project_name', 'category',
-                'phone_number', 'address', 'status'
-            ]
-            extra_kwargs = {
-                'status': {'read_only': True}
-            }
+class SellerRegistrationSerializer(serializers.ModelSerializer):
+    address = AddressSerializer()
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "full_name",
+            "project_name",
+            "category",
+            "phone_number",
+            "address",
+            "status",
+        ]
+
+        extra_kwargs = {"status": {"read_only": True}}
 
         def create(self, validated_data):
-            address_data = validated_data.pop('address')
+            address_data = validated_data.pop("address")
 
             user = User.objects.create(
-                role='seller',
-                status='pending',
-                is_active=False,
-                **validated_data
+                role="seller", status="pending", is_active=False, **validated_data
             )
-
             Address.objects.create(user=user, **address_data)
 
             return user
@@ -91,17 +96,17 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class UserLoginSerializer(serializers.Serializer):
     phone_number = serializers.CharField()
-    password = serializers.CharField(style={'input_type': 'password'})
+    password = serializers.CharField(style={"input_type": "password"})
 
     def validate(self, attrs):
-        phone_number = attrs.get('phone_number')
-        password = attrs.get('password')
+        phone_number = attrs.get("phone_number")
+        password = attrs.get("password")
 
         if phone_number and password:
             user = authenticate(
-                request=self.context.get('request'),
+                request=self.context.get("request"),
                 username=phone_number,
-                password=password
+                password=password,
             )
 
             if not user:
@@ -110,7 +115,7 @@ class UserLoginSerializer(serializers.Serializer):
             if not user.is_active:
                 raise serializers.ValidationError("User account is disabled.")
 
-            attrs['user'] = user
+            attrs["user"] = user
             return attrs
 
         raise serializers.ValidationError("Must include phone number and password.")
@@ -119,16 +124,20 @@ class UserLoginSerializer(serializers.Serializer):
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['full_name', 'phone_number', 'profile_photo']
-        extra_kwargs = {
-            'phone_number': {'required': False}
-        }
+        fields = ["full_name", "phone_number", "profile_photo"]
+        extra_kwargs = {"phone_number": {"required": False}}
 
     def update(self, instance, validated_data):
-        phone_number = validated_data.get('phone_number')
+        phone_number = validated_data.get("phone_number")
         if phone_number and phone_number != instance.phone_number:
-            if User.objects.filter(phone_number=phone_number).exclude(id=instance.id).exists():
-                raise serializers.ValidationError({'phone_number': 'This phone number is already in use.'})
+            if (
+                User.objects.filter(phone_number=phone_number)
+                .exclude(id=instance.id)
+                .exists()
+            ):
+                raise serializers.ValidationError(
+                    {"phone_number": "This phone number is already in use."}
+                )
 
         return super().update(instance, validated_data)
 
@@ -137,11 +146,11 @@ class TokenRefreshSerializer(serializers.Serializer):
     refresh_token = serializers.CharField()
 
     def validate(self, attrs):
-        refresh_token = attrs.get('refresh_token')
+        refresh_token = attrs.get("refresh_token")
 
         try:
             token = RefreshToken(refresh_token)
-            attrs['access_token'] = str(token.access_token)
+            attrs["access_token"] = str(token.access_token)
             return attrs
         except Exception:
             raise serializers.ValidationError("Invalid refresh token.")
@@ -151,14 +160,15 @@ class TokenVerifySerializer(serializers.Serializer):
     token = serializers.CharField()
 
     def validate(self, attrs):
-        token = attrs.get('token')
+        token = attrs.get("token")
 
         try:
             from rest_framework_simplejwt.tokens import AccessToken
+
             access_token = AccessToken(token)
-            attrs['user_id'] = access_token.payload.get('user_id')
-            attrs['valid'] = True
+            attrs["user_id"] = access_token.payload.get("user_id")
+            attrs["valid"] = True
             return attrs
         except Exception:
-            attrs['valid'] = False
+            attrs["valid"] = False
             return attrs

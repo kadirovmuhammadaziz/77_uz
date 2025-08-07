@@ -3,7 +3,6 @@ from rest_framework import permissions
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
 
-
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
@@ -17,9 +16,9 @@ class IsOwnerOrAuthenticated(permissions.BasePermission):
         return request.user and request.user.is_authenticated
 
     def has_object_permission(self, request, view, obj):
-        if hasattr(obj, 'user'):
+        if hasattr(obj, "user"):
             return obj.user == request.user
-        elif hasattr(obj, 'seller'):
+        elif hasattr(obj, "seller"):
             return obj.seller == request.user
         return False
 

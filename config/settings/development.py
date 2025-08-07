@@ -1,25 +1,25 @@
-from .base import *
+from .base import (
+    BASE_APPS,
+    THIRD_PARTY_APPS,
+    LOCAL_APPS,
+    MIDDLEWARE,
+)
 
-ALLOWED_HOSTS = ["*"]
+# Development specific settings
 DEBUG = True
+ALLOWED_HOSTS = ["*"]
+
+# Debug Toolbar qo'shish
+INSTALLED_APPS = BASE_APPS + THIRD_PARTY_APPS + LOCAL_APPS + ["debug_toolbar"]
+
+# Debug Toolbar middleware qo'shish
+MIDDLEWARE = MIDDLEWARE + ["debug_toolbar.middleware.DebugToolbarMiddleware"]
+
+# Debug Toolbar settings
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+# CORS settings for development
 CORS_ALLOW_ALL_ORIGINS = True
-
-SWAGGER_SETTINGS = {
-    "SECURITY_DEFINITIONS": {
-        "[Bearer {JWT}]": {
-            "name": "Authorization",
-            "type": "apiKey",
-            "in": "header",
-        }
-    },
-    "USE_SESSION_AUTH": False,
-    "APIS_SORTER": "alpha",
-    "SUPPORTED_SUBMIT_METHODS": ["get", "post", "put", "delete", "patch"],
-    "OPERATIONS_SORTER": "alpha",
-}
-
-INTERNAL_IPS = ["127.0.0.1"]
-
-INSTALLED_APPS += ["debug_toolbar"]  # noqa: F405
-
-MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
+CORS_ALLOW_CREDENTIALS = True

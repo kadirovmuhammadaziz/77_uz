@@ -23,7 +23,6 @@ BASE_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.postgres",
 ]
 THIRD_PARTY_APPS = [
     "rest_framework",
@@ -145,12 +144,12 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
-    # "EXCEPTION_HANDLER": "common.utils.custom_exception_handler.custom_exception_handler",  # noqa
-    'DEFAULT_FILTER_BACKENDS': (
-            'django_filters.rest_framework.DjangoFilterBackend',
-            'rest_framework.filters.OrderingFilter',
-            'rest_framework.filters.SearchFilter',
-        ),
+    "EXCEPTION_HANDLER": "common.utils.custom_exception_handler.custom_exception_handler",  # noqa
+    "DEFAULT_FILTER_BACKENDS": (
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.OrderingFilter",
+        "rest_framework.filters.SearchFilter",
+    ),
 }
 
 SIMPLE_JWT = {
