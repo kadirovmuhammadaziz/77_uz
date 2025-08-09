@@ -2,23 +2,18 @@ from rest_framework import serializers
 from .models import Region, District, StaticPage, Setting
 
 
-class RegionSerializer(serializers.ModelSerializer):
-    district_count = serializers.SerializerMethodField()
+class DistrictSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = District
+        fields = ["id", "name"]
+
+
+class RegionWithDistrictsSerializer(serializers.ModelSerializer):
+    districts = DistrictSerializer(many=True, read_only=True)
 
     class Meta:
         model = Region
-        fields = ["id", "guid", "name", "districts_count", "created_time"]
-
-        def get_district_count(self, obj):
-            return obj.district.count()
-
-
-class DistrictSerializer(serializers.ModelSerializer):
-    region_name = serializers.CharField(source="region.name", read_only=True)
-
-    class Meta:
-        model = District
-        fields = ["id", "guid", "name", "region", "region_name", "created_time"]
+        fields = ["id", "name", "districts"]
 
 
 class StaticPageSerializer(serializers.ModelSerializer):
@@ -26,13 +21,16 @@ class StaticPageSerializer(serializers.ModelSerializer):
         model = StaticPage
         fields = [
             "id",
-            "guid",
             "slug",
             "title",
             "content",
             "meta_description",
             "is_active",
         ]
+class StaticPageListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StaticPage
+        fields = ["slug", "title"]
 
 
 class SettingSerializer(serializers.ModelSerializer):

@@ -29,7 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
             "phone_number",
             "profile_photo",
             "address",
-            "created_at",
+            "created_time",
         ]
 
 
@@ -80,18 +80,29 @@ class SellerRegistrationSerializer(serializers.ModelSerializer):
             "address",
             "status",
         ]
-
         extra_kwargs = {"status": {"read_only": True}}
 
-        def create(self, validated_data):
-            address_data = validated_data.pop("address")
+    def create(self, validated_data):
+        address_data = validated_data.pop("address")
 
-            user = User.objects.create(
-                role="seller", status="pending", is_active=False, **validated_data
-            )
-            Address.objects.create(user=user, **address_data)
+        user = User.objects.create(
+            role="seller", status="pending", is_active=False, **validated_data
+        )
+        Address.objects.create(user=user, **address_data)
 
-            return user
+        return user
+
+    def to_representation(self, instance):
+        data = {
+            "id": instance.id,
+            "full_name": instance.full_name,
+            "project_name": instance.project_name,
+            "category_id": instance.category.id if instance.category else None,
+            "phone_number": instance.phone_number,
+            "address": instance.address.name if hasattr(instance, 'address') and instance.address else None,
+            "status": instance.status,
+        }
+        return data
 
 
 class UserLoginSerializer(serializers.Serializer):
@@ -120,6 +131,20 @@ class UserLoginSerializer(serializers.Serializer):
 
         raise serializers.ValidationError("Must include phone number and password.")
 
+    def to_representation(self, instance):
+        user = instance["user"]
+        refresh = RefreshToken.for_user(user)
+
+        return {
+            "access_token": str(refresh.access_token),
+            "refresh_token": str(refresh),
+            "user": {
+                "id": user.id,
+                "full_name": user.full_name,
+                "phone_number": user.phone_number,
+            }
+        }
+
 
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -131,9 +156,9 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
         phone_number = validated_data.get("phone_number")
         if phone_number and phone_number != instance.phone_number:
             if (
-                User.objects.filter(phone_number=phone_number)
-                .exclude(id=instance.id)
-                .exists()
+                    User.objects.filter(phone_number=phone_number)
+                            .exclude(id=instance.id)
+                            .exists()
             ):
                 raise serializers.ValidationError(
                     {"phone_number": "This phone number is already in use."}

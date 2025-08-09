@@ -15,28 +15,3 @@ class BaseModel(models.Model):
 
     def __str__(self):
         return f"{self.__class__.__name__} - {self.guid}"
-
-
-class BaseModelWithSlug(BaseModel):
-    slug = models.SlugField(max_length=255, unique=True, verbose_name="URL nomi")
-
-    class Meta:
-        abstract = True
-
-
-class BaseModelWithStatus(BaseModel):
-    """Status maydoni bilan base model"""
-
-    STATUS_CHOICES = [
-        ("active", "Faol"),
-        ("inactive", "Nofaol"),
-        ("draft", "Qoralama"),
-        ("archived", "Arxivlangan"),
-    ]
-
-    status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default="active", verbose_name="Holati"
-    )
-
-    class Meta:
-        abstract = True

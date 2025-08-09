@@ -5,7 +5,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.pagination import PageNumberPagination
 
 from .models import (
     Category,
@@ -32,12 +31,7 @@ from .serializers import (
 )
 from .filters import AdFilter
 from .permissions import IsOwnerOrReadOnly
-
-
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 20
-    page_size_query_param = "page_size"
-    max_page_size = 100
+from .pagination import StandardResultsSetPagination, SmallResultsSetPagination
 
 
 # Category Views
@@ -248,7 +242,6 @@ class FavoriteProductDeleteView(generics.DestroyAPIView):
 
 
 class FavoriteProductDeleteByIdView(APIView):
-
     def delete(self, request, id):
         try:
             if request.user.is_authenticated:
@@ -296,7 +289,7 @@ class SavedSearchDeleteView(generics.DestroyAPIView):
 
 class CategoryProductSearchView(generics.ListAPIView):
     serializer_class = SearchResultSerializer
-    pagination_class = StandardResultsSetPagination
+    pagination_class = SmallResultsSetPagination
 
     def get_queryset(self):
         query = self.request.query_params.get("q", "").strip()
@@ -352,7 +345,7 @@ class CategoryProductSearchView(generics.ListAPIView):
 
 class AutoCompleteSearchView(generics.ListAPIView):
     serializer_class = AutoCompleteSerializer
-    pagination_class = StandardResultsSetPagination
+    pagination_class = SmallResultsSetPagination
 
     def get_queryset(self):
         query = self.request.query_params.get("q", "").strip()
@@ -394,7 +387,7 @@ class AutoCompleteSearchView(generics.ListAPIView):
 class PopularSearchView(generics.ListAPIView):
     queryset = PopularSearch.objects.filter(is_active=True)
     serializer_class = PopularSearchSerializer
-    pagination_class = StandardResultsSetPagination
+    pagination_class = SmallResultsSetPagination
 
 
 @api_view(["GET"])

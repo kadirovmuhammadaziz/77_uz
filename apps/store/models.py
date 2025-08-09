@@ -18,12 +18,11 @@ class Category(BaseModel):
         verbose_name="Parent category",
     )
     is_active = models.BooleanField(default=True, verbose_name="Active")
-    order = models.PositiveIntegerField(default=0, verbose_name="Order")
 
     class Meta:
         verbose_name = "Category"
         verbose_name_plural = "Categories"
-        ordering = ["order", "name"]
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
@@ -62,34 +61,16 @@ class Ad(BaseModel):
         related_name="ads",
         verbose_name="Category",
     )
-    price = models.PositiveBigIntegerField(verbose_name="Price (UZS)")
+    price = models.PositiveBigIntegerField(verbose_name="Price (UZS)")#ozgartr decimil
     seller = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
         related_name="ads",
         verbose_name="Seller",
     )
-
-    region = models.ForeignKey(
-        "common.Region",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name="Region",
-    )
-    district = models.ForeignKey(
-        "common.District",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name="District",
-    )
-    address = models.CharField(max_length=500, blank=True, verbose_name="Address")
-
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default="pending", verbose_name="Status"
     )
-    is_top = models.BooleanField(default=False, verbose_name="Top ad")
     view_count = models.PositiveIntegerField(default=0, verbose_name="View count")
 
     published_at = models.DateTimeField(auto_now_add=True, verbose_name="Published at")
@@ -123,8 +104,6 @@ class Ad(BaseModel):
 
         return slug
 
-    def get_absolute_url(self):
-        return reverse("store:ad_detail", kwargs={"slug": self.slug})
 
     @property
     def main_photo(self):

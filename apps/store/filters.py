@@ -4,10 +4,6 @@ from .models import Ad, Category
 
 
 class AdFilter(django_filters.FilterSet):
-    """
-    E'lonlar uchun advanced filtrlash
-    """
-
     name = django_filters.CharFilter(
         field_name="name",
         lookup_expr="icontains",

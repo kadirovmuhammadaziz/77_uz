@@ -21,7 +21,6 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
         ("super_admin", "Super Admin"),
         ("admin", "Admin"),
         ("seller", "Seller"),
-        ("customer", "Customer"),
     ]
 
     STATUS_CHOICES = [
@@ -31,7 +30,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     ]
 
     phone_regex = RegexValidator(
-        regex=r"^\+998\d{9}$", message="Phone number must be in format: +998XXXXXXXXX"
+        regex=r"^\+998\d{9}$", message="Phone number must be in format: +998XXXXXXXXX"#Buni  commonda yozaman va uni bu kodga caqrqm kere
     )
 
     full_name = models.CharField(max_length=255)
@@ -64,20 +63,9 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     def __str__(self):
         return f"{self.full_name} ({self.phone_number})"
 
-    def save(self, *args, **kwargs):
-        if self.role == "seller" and self.status == "pending":
-            self.is_active = False
-        elif self.status == "approved":
-            self.is_active = True
-        super().save(*args, **kwargs)
-
     @property
     def is_seller(self):
         return self.role == "seller"
-
-    @property
-    def is_customer(self):
-        return self.role == "customer"
 
 
 class Address(models.Model):
@@ -92,26 +80,3 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.user.full_name}"
-
-
-class SellerRegistrationRequest(models.Model):
-
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="registration_requests"
-    )
-    request_date = models.DateTimeField(auto_now_add=True)
-    admin_notes = models.TextField(blank=True)
-    processed_by = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="processed_registrations",
-    )
-    processed_date = models.DateTimeField(null=True, blank=True)
-
-    class Meta:
-        ordering = ["-request_date"]
-
-    def __str__(self):
-        return f"Registration request - {self.user.full_name}"

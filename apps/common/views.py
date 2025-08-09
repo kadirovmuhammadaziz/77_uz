@@ -1,29 +1,24 @@
 from rest_framework import generics
+from django.db.models import Prefetch
 from .models import Region, District, StaticPage, Setting
 from .serializers import (
-    RegionSerializer,
+    RegionWithDistrictsSerializer,
     DistrictSerializer,
     StaticPageSerializer,
+    StaticPageListSerializer,
     SettingSerializer,
 )
 from .utils.custom_response_decorator import custom_response
 
 
 @custom_response
-class RegionListView(generics.ListAPIView):
-    queryset = Region.objects.all()
-    serializer_class = RegionSerializer
-
-
-@custom_response
-class DistrictListView(generics.ListAPIView):
-    serializer_class = DistrictSerializer
+class RegionsWithDistrictsListView(generics.ListAPIView):
+    serializer_class = RegionWithDistrictsSerializer
 
     def get_queryset(self):
-        region_id = self.request.query_params.get("region_id")
-        if region_id:
-            return District.objects.filter(region_id=region_id)
-        return District.objects.all()
+        return Region.objects.prefetch_related(
+            Prefetch('districts', queryset=District.objects.all())
+        ).all()
 
 
 @custom_response
@@ -31,6 +26,14 @@ class StaticPageDetailView(generics.RetrieveAPIView):
     queryset = StaticPage.objects.filter(is_active=True)
     serializer_class = StaticPageSerializer
     lookup_field = "slug"
+
+
+@custom_response
+class StaticPageListView(generics.ListAPIView):
+    serializer_class = StaticPageListSerializer
+
+    def get_queryset(self):
+        return StaticPage.objects.filter(is_active=True).order_by('id')
 
 
 @custom_response

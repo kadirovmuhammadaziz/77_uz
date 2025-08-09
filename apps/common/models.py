@@ -53,10 +53,10 @@ class Setting(BaseModel):
             raise ValueError("Only one Settings instance is allowed")
         super().save(*args, **kwargs),
 
-        @classmethod
-        def get_settings(cls):
-            settings, created = cls.objects.get_or_create(pk=1)
-            return settings
+    @classmethod
+    def get_settings(cls):
+        settings, created = cls.objects.get_or_create(pk=1)
+        return settings
 
     class Meta:
         ordering = ["-created_time"]
