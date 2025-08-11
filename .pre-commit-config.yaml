@@ -1,7 +1,4 @@
-Muammo shundaki, pre-commit hook system language ishlatayotganda ba'zan virtual environment va environment variable-larni to'g'ri yuklolmaydi. Quyidagi yechimlardan birini sinab ko'ring:
-Yechim 1: Virtual environment-ni aniq ko'rsating
-.pre-commit-config.yaml faylingizni quyidagicha o'zgartiring:
-yamldefault_language_version:
+default_language_version:
   python: python3.13
 
 exclude: >
@@ -27,7 +24,10 @@ repos:
     hooks:
       - id: migrations-check
         name: Check for uncreated migrations
-        entry: .venv/Scripts/python.exe manage.py makemigrations --check --dry-run
+        # Windows uchun:
+        # entry: .venv/Scripts/python.exe manage.py makemigrations --check --dry-run
+        # Linux/Mac uchun:
+        entry: .venv/bin/python manage.py makemigrations --check --dry-run
         language: system
         files: '\.py$'
         pass_filenames: false

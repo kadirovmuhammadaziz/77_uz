@@ -30,7 +30,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     ]
 
     phone_regex = RegexValidator(
-        regex=r"^\+998\d{9}$", message="Phone number must be in format: +998XXXXXXXXX"#Buni  commonda yozaman va uni bu kodga caqrqm kere
+        regex=r"^\+998\d{9}$", message="Phone number must be in format: +998XXXXXXXXX"
     )
 
     full_name = models.CharField(max_length=255)

@@ -24,9 +24,10 @@ class StaticPageSerializer(serializers.ModelSerializer):
             "slug",
             "title",
             "content",
-            "meta_description",
             "is_active",
         ]
+
+
 class StaticPageListSerializer(serializers.ModelSerializer):
     class Meta:
         model = StaticPage

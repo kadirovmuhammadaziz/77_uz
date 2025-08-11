@@ -51,7 +51,7 @@ class Setting(BaseModel):
     def save(self, *args, **kwargs):
         if not self.pk and Setting.objects.exists():
             raise ValueError("Only one Settings instance is allowed")
-        super().save(*args, **kwargs),
+        super().save(*args, **kwargs)
 
     @classmethod
     def get_settings(cls):

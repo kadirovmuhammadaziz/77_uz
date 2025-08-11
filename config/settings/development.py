@@ -1,25 +1,15 @@
-from .base import (
-    BASE_APPS,
-    THIRD_PARTY_APPS,
-    LOCAL_APPS,
-    MIDDLEWARE,
-)
+from .base import INSTALLED_APPS, MIDDLEWARE, REST_FRAMEWORK
 
-# Development specific settings
 DEBUG = True
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [INSTALLED_APPS, MIDDLEWARE, REST_FRAMEWORK]
 
 # Debug Toolbar qo'shish
-INSTALLED_APPS = BASE_APPS + THIRD_PARTY_APPS + LOCAL_APPS + ["debug_toolbar"]
+INSTALLED_APPS += ["debug_toolbar"]
+MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
+INTERNAL_IPS = ["127.0.0.1"]
 
-# Debug Toolbar middleware qo'shish
-MIDDLEWARE = MIDDLEWARE + ["debug_toolbar.middleware.DebugToolbarMiddleware"]
-
-# Debug Toolbar settings
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
-
-# CORS settings for development
+# CORS settings for dev
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+
+# Statik va media fayllar uchun (asosan devda ishlatiladi)

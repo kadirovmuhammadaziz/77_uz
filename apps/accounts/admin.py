@@ -43,6 +43,11 @@ class UserChangeForm(forms.ModelForm):
             "is_staff",
             "role",
             "status",
+            "profile_photo",
+            "project_name",
+            "category",
+            "created_time",
+            "updated_time",
         )
 
     def clean_password(self):
@@ -52,6 +57,7 @@ class UserChangeForm(forms.ModelForm):
 class AddressInline(admin.StackedInline):
     model = Address
     extra = 0
+    readonly_fields = ("name", "lat", "long")
 
 
 @admin.register(User)
@@ -61,11 +67,13 @@ class UserAdmin(BaseUserAdmin):
     inlines = [AddressInline]
 
     list_display = (
+        "id",
         "phone_number",
         "full_name",
         "role",
         "status",
         "is_active",
+        "is_staff",
         "created_time",
     )
     list_filter = ("role", "status", "is_active", "is_staff", "created_time")
@@ -74,8 +82,8 @@ class UserAdmin(BaseUserAdmin):
 
     fieldsets = (
         (None, {"fields": ("phone_number", "password")}),
-        ("Personal info", {"fields": ("full_name", "profile_photo")}),
-        ("Seller info", {"fields": ("project_name", "category")}),
+        ("Personal Info", {"fields": ("full_name", "profile_photo")}),
+        ("Seller Info", {"fields": ("project_name", "category")}),
         (
             "Permissions",
             {
@@ -90,9 +98,8 @@ class UserAdmin(BaseUserAdmin):
                 )
             },
         ),
-        ("Important dates", {"fields": ("last_login", "created_time", "updated_time")}),
+        ("Important Dates", {"fields": ("last_login", "created_time", "updated_time")}),
     )
-
     add_fieldsets = (
         (
             None,
@@ -102,31 +109,32 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
     )
-
     readonly_fields = ("created_time", "updated_time")
 
     actions = ["approve_sellers", "reject_sellers"]
 
     def approve_sellers(self, request, queryset):
-        queryset.filter(role="seller").update(status="approved", is_active=True)
-        self.message_user(request, f"{queryset.count()} sellers approved successfully.")
+        sellers = queryset.filter(role="seller", status="pending")
+        count = sellers.update(status="approved", is_active=True)
+        self.message_user(request, f"{count} seller(s) successfully approved.")
 
     approve_sellers.short_description = "Approve selected sellers"
 
     def reject_sellers(self, request, queryset):
-        queryset.filter(role="seller").update(status="rejected", is_active=False)
-        self.message_user(request, f"{queryset.count()} sellers rejected.")
+        sellers = queryset.filter(role="seller", status="pending")
+        count = sellers.update(status="rejected", is_active=False)
+        self.message_user(request, f"{count} seller(s) rejected.")
 
     reject_sellers.short_description = "Reject selected sellers"
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("name", "description")
+    list_display = ("id", "name", "description")
     search_fields = ("name",)
 
 
 @admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
-    list_display = ("user", "name", "lat", "long")
+    list_display = ("id", "user", "name", "lat", "long")
     search_fields = ("user__full_name", "name")
