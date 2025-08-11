@@ -2,39 +2,21 @@ from rest_framework import serializers
 from .models import Region, District, StaticPage, Setting
 
 
-class DistrictSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = District
-        fields = ["id", "name"]
+class DistrictSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
 
-
-class RegionWithDistrictsSerializer(serializers.ModelSerializer):
+class RegionWithDistrictsSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
     districts = DistrictSerializer(many=True, read_only=True)
 
-    class Meta:
-        model = Region
-        fields = ["id", "name", "districts"]
+class StaticPageListSerializer(serializers.Serializer):
+    slug = serializers.SlugField(read_only=True)
+    title = serializers.CharField(read_only=True)
 
-
-class StaticPageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StaticPage
-        fields = [
-            "id",
-            "slug",
-            "title",
-            "content",
-            "is_active",
-        ]
-
-
-class StaticPageListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = StaticPage
-        fields = ["slug", "title"]
-
-
-class SettingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Setting
-        fields = ["phone", "support_email", "working_hours", "maintenance_mode"]
+class SettingSerializer(serializers.Serializer):
+    phone = serializers.CharField(read_only=True)
+    support_email = serializers.EmailField(read_only=True)
+    working_hours = serializers.CharField(read_only=True)
+    maintenance_mode = serializers.BooleanField(read_only=True)
