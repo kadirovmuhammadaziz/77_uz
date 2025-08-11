@@ -3,8 +3,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from .models import User, Address, Category
-
+from .models import User, Address
+from store.models import Category
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:

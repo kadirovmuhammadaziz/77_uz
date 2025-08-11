@@ -5,17 +5,6 @@ from common.base_models import BaseModel
 from .managers import UserManager
 
 
-class Category(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
-
-    class Meta:
-        verbose_name_plural = "Categories"
-
-    def __str__(self):
-        return self.name
-
-
 class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     ROLE_CHOICES = [
         ("super_admin", "Super Admin"),
@@ -42,7 +31,7 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
         max_length=200, null=True, blank=True, help_text="Required for sellers"
     )
     category = models.ForeignKey(
-        Category,
+        "store.Category",
         on_delete=models.CASCADE,
         related_name="sellers",
         null=True,
