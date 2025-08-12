@@ -27,10 +27,10 @@ class CategorySerializer(serializers.ModelSerializer):
             "is_active",
             "order",
             "product_count",
-            "created_at",
-            "updated_at",
+            "created_time",
+            "updated_time",
         ]
-        read_only_fields = ["slug", "created_at", "updated_at", "product_count"]
+        read_only_fields = ["slug", "created_time", "updated_time", "product_count"]
 
 
 class CategoryWithChildrenSerializer(serializers.ModelSerializer):
@@ -49,8 +49,8 @@ class CategoryWithChildrenSerializer(serializers.ModelSerializer):
             "order",
             "product_count",
             "children",
-            "created_at",
-            "updated_at",
+            "created_time",
+            "updated_time",
         ]
         read_only_fields = [
             "slug",
@@ -93,8 +93,8 @@ class AdPhotoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AdPhoto
-        fields = ["id", "ad", "image", "is_main", "order", "created_at", "updated_at"]
-        read_only_fields = ["created_at", "updated_at"]
+        fields = ["id", "ad", "image", "is_main", "order", "created_time", "updated_time"]
+        read_only_fields = ["created_time", "updated_time"]
 
 
 class AdListSerializer(serializers.ModelSerializer):
@@ -118,7 +118,7 @@ class AdListSerializer(serializers.ModelSerializer):
             "view_count",
             "status",
             "is_top",
-            "updated_at",
+            "updated_time",
         ]
         read_only_fields = [
             "slug",
@@ -127,7 +127,7 @@ class AdListSerializer(serializers.ModelSerializer):
             "is_liked",
             "photo",
             "address",
-            "updated_at",
+            "updated_time",
         ]
 
     def get_photo(self, obj):
@@ -182,7 +182,7 @@ class AdDetailSerializer(serializers.ModelSerializer):
             "published_at",
             "photos",
             "is_liked",
-            "updated_at",
+            "updated_time",
         ]
         read_only_fields = [
             "slug",
@@ -191,7 +191,7 @@ class AdDetailSerializer(serializers.ModelSerializer):
             "is_liked",
             "photos",
             "address",
-            "updated_at",
+            "updated_time",
         ]
 
     def get_address(self, obj):
@@ -275,10 +275,10 @@ class FavoriteProductSerializer(serializers.ModelSerializer):
             "ad",
             "product",
             "device_id",
-            "created_at",
-            "updated_at",
+            "created_time",
+            "updated_time",
         ]
-        read_only_fields = ["id", "user", "created_at", "updated_at", "product"]
+        read_only_fields = ["id", "user", "created_time", "updated_time", "product"]
 
     def create(self, validated_data):
         request = self.context.get("request")
@@ -307,10 +307,10 @@ class SavedSearchSerializer(serializers.ModelSerializer):
             "search_query",
             "price_min",
             "price_max",
-            "created_at",
-            "updated_at",
+            "created_time",
+            "updated_time",
         ]
-        read_only_fields = ["id", "user", "created_at", "updated_at"]
+        read_only_fields = ["id", "user", "created_time", "updated_time"]
 
     def create(self, validated_data):
         validated_data["user"] = self.context["request"].user
@@ -322,8 +322,8 @@ class SearchCountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SearchCount
-        fields = ["id", "category", "search_count", "created_at", "updated_at"]
-        read_only_fields = ["id", "created_at", "updated_at"]
+        fields = ["id", "category", "search_count", "created_time", "updated_time"]
+        read_only_fields = ["id", "created_time", "updated_time"]
 
 
 class PopularSearchSerializer(serializers.ModelSerializer):
@@ -336,10 +336,10 @@ class PopularSearchSerializer(serializers.ModelSerializer):
             "icon",
             "search_count",
             "is_active",
-            "created_at",
-            "updated_at",
+            "created_time",
+            "updated_time",
         ]
-        read_only_fields = ["id", "created_at", "updated_at"]
+        read_only_fields = ["id", "created_time", "updated_time"]
 
 
 class AdPhotoCreateSerializer(serializers.ModelSerializer):
@@ -347,8 +347,8 @@ class AdPhotoCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AdPhoto
-        fields = ["id", "image", "is_main", "product_id", "order", "created_at"]
-        read_only_fields = ["id", "created_at"]
+        fields = ["id", "image", "is_main", "product_id", "order", "created_time"]
+        read_only_fields = ["id", "created_time"]
 
     def create(self, validated_data):
         product_id = validated_data.pop("product_id")
