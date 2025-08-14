@@ -1,15 +1,25 @@
-from .base import INSTALLED_APPS, MIDDLEWARE, REST_FRAMEWORK
+from .base import *  # noqa
 
+ALLOWED_HOSTS = ["*"]
 DEBUG = True
-ALLOWED_HOSTS = [INSTALLED_APPS, MIDDLEWARE, REST_FRAMEWORK]
+CORS_ALLOW_ALL_ORIGINS = True
 
-# Debug Toolbar qo'shish
-INSTALLED_APPS += ["debug_toolbar"]
-MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "[Bearer {JWT}]": {
+            "name": "Authorization",
+            "type": "apiKey",
+            "in": "header",
+        }
+    },
+    "USE_SESSION_AUTH": False,
+    "APIS_SORTER": "alpha",
+    "SUPPORTED_SUBMIT_METHODS": ["get", "post", "put", "delete", "patch"],
+    "OPERATIONS_SORTER": "alpha",
+}
+
 INTERNAL_IPS = ["127.0.0.1"]
 
-# CORS settings for dev
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
+INSTALLED_APPS += ["debug_toolbar"]  # noqa: F405
 
-# Statik va media fayllar uchun (asosan devda ishlatiladi)
+MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]  # noqa: F405
