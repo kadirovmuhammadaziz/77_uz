@@ -134,9 +134,9 @@ celerybeat.pid
 # Environments
 .env
 .venv
-env/
+.env/
 venv/
-ENV/
+.env/
 env.bak/
 venv.bak/
 
@@ -351,6 +351,8 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 
-# End of https://www.toptal.com/developers/gitignore/api/python,django,pycharm+all. i d e a /  
- . g i t _ b a c k u p /  
+# End of https://www.toptal.com/developers/gitignore/api/python,django,pycharm+all. i d e a / 
+ 
+ . g i t _ b a c k u p / 
+ 
  
