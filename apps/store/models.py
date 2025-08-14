@@ -82,7 +82,7 @@ class Ad(BaseModel):
             models.Index(fields=["category", "status"]),
             models.Index(fields=["seller", "status"]),
             models.Index(fields=["price"]),
-            models.Index(fields=["is_top", "published_at"]),
+            models.Index(fields=[ "published_at"]),
         ]
 
     def __str__(self):

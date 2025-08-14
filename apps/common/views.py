@@ -4,8 +4,8 @@ from .models import Region, District, StaticPage, Setting
 from .serializers import (
     RegionWithDistrictsSerializer,
     DistrictSerializer,
-    StaticPageSerializer,
     StaticPageListSerializer,
+    StaticPageDetailSerializer,
     SettingSerializer,
 )
 from .utils.custom_response_decorator import custom_response
@@ -24,7 +24,7 @@ class RegionsWithDistrictsListView(generics.ListAPIView):
 @custom_response
 class StaticPageDetailView(generics.RetrieveAPIView):
     queryset = StaticPage.objects.filter(is_active=True)
-    serializer_class = StaticPageSerializer
+    serializer_class = StaticPageDetailSerializer
     lookup_field = "slug"
 
 

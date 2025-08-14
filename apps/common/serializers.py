@@ -6,14 +6,25 @@ class DistrictSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(read_only=True)
 
+
 class RegionWithDistrictsSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(read_only=True)
     districts = DistrictSerializer(many=True, read_only=True)
 
+
 class StaticPageListSerializer(serializers.Serializer):
     slug = serializers.SlugField(read_only=True)
     title = serializers.CharField(read_only=True)
+
+
+class StaticPageDetailSerializer(serializers.Serializer):
+    slug = serializers.SlugField(read_only=True)
+    title = serializers.CharField(read_only=True)
+    content = serializers.CharField(read_only=True)
+    created_time = serializers.DateTimeField(read_only=True)
+    updated_time = serializers.DateTimeField(read_only=True)
+
 
 class SettingSerializer(serializers.Serializer):
     phone = serializers.CharField(read_only=True)

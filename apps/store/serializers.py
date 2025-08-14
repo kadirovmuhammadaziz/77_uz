@@ -117,7 +117,6 @@ class AdListSerializer(serializers.ModelSerializer):
             "is_liked",
             "view_count",
             "status",
-            "is_top",
             "updated_time",
         ]
         read_only_fields = [
@@ -232,7 +231,7 @@ class AdCreateUpdateSerializer(serializers.ModelSerializer):
             "address",
             "photos",
             "status",
-            "is_top",
+
         ]
         read_only_fields = ["id"]
 

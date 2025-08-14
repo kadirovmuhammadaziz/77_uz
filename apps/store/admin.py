@@ -21,11 +21,11 @@ class AdPhotoInline(admin.TabularInline):
 
 @admin.register(Category)
 class CategoryAdmin(TranslationAdmin):
-    list_display = ["name", "parent", "product_count", "is_active", "order"]
+    list_display = ["name", "parent", "product_count", "is_active", ]
     list_filter = ["is_active", "parent", "created_time"]
     search_fields = ["name_uz", "name_ru"]
     prepopulated_fields = {"slug": ("name_uz",)}
-    ordering = ["order", "name"]
+    ordering = ["name"]
 
     def get_queryset(self, request):
         return super().get_queryset(request).select_related("parent")
@@ -39,15 +39,12 @@ class AdAdmin(TranslationAdmin):
         "seller",
         "price_formatted",
         "status",
-        "is_top",
         "view_count",
         "published_at",
     ]
     list_filter = [
         "status",
-        "is_top",
         "category",
-        "region",
         "published_at",
         "created_time",
     ]
@@ -78,7 +75,7 @@ class AdAdmin(TranslationAdmin):
         ),
         ("Narx va joylashuv", {"fields": ("price", "region", "district", "address")}),
         ("Sotuvchi", {"fields": ("seller",)}),
-        ("Holat va sozlamalar", {"fields": ("status", "is_top")}),
+        ("Holat va sozlamalar", {"fields": ("status", )}),
         (
             "Statistika",
             {"fields": ("view_count", "published_at"), "classes": ("collapse",)},

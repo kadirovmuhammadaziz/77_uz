@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django import forms
-from .models import User, Address, Category
+from .models import User, Address
+from store.models import Category
 
 
 class UserCreationForm(forms.ModelForm):
@@ -46,8 +47,6 @@ class UserChangeForm(forms.ModelForm):
             "profile_photo",
             "project_name",
             "category",
-            "created_time",
-            "updated_time",
         )
 
     def clean_password(self):
@@ -126,12 +125,6 @@ class UserAdmin(BaseUserAdmin):
         self.message_user(request, f"{count} seller(s) rejected.")
 
     reject_sellers.short_description = "Reject selected sellers"
-
-
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "description")
-    search_fields = ("name",)
 
 
 @admin.register(Address)

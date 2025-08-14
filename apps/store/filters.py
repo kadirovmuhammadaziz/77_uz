@@ -69,7 +69,6 @@ class AdFilter(django_filters.FilterSet):
             "region",
             "district",
             "is_new",
-            "is_top",
             "published_after",
             "published_before",
         ]
