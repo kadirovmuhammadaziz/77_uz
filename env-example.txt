@@ -1,2 +1,2 @@
 DJANGO_SETTINGS_MODULE=config.settings.development
-SECRET_KEY=your-secret-key-here
+SECRET_KEY=*&^76778&^&*^&**^&**^^&*^&*^&*^*&&
